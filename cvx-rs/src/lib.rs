@@ -4,9 +4,9 @@
 // https://crates.io/crates/ndarray-rand
 // https://github.com/rust-ndarray/ndarray-linalg
 
-mod functions;
-mod solvers;
-mod variable;
+pub mod functions;
+pub mod solvers;
+pub mod variable;
 
 #[cfg(test)]
 mod tests {
