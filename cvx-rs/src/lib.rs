@@ -12,8 +12,8 @@ mod variable;
 mod tests {
     use crate::functions::*;
     use crate::variable::*;
-    use ndarray::prelude::*;
     use approx::assert_relative_eq;
+    use ndarray::prelude::*;
 
     #[test]
     fn defining_an_ast_works() {
@@ -92,13 +92,15 @@ mod tests {
         };
 
         match problem.solve() {
-
-        solvers::Result::Solved(result) => {
-            for (expected, given) in [-0.08686015735562105, -0.7571157568954829].iter().zip(result.iter()) {
-                assert_relative_eq!(expected, given);
+            solvers::Result::Solved(result) => {
+                for (expected, given) in [-0.08686015735562105, -0.7571157568954829]
+                    .iter()
+                    .zip(result.iter())
+                {
+                    assert_relative_eq!(expected, given);
+                }
             }
-        },
-        _ => panic!("Could not solve problem"),
+            _ => panic!("Could not solve problem"),
         }
     }
 }
