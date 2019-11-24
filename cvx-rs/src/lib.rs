@@ -1,8 +1,10 @@
+#![feature(box_patterns)]
 // Gonna be useful:
 // https://crates.io/crates/ndarray-rand
 // https://github.com/rust-ndarray/ndarray-linalg
 
 mod functions;
+mod solvers;
 mod variable;
 
 #[cfg(test)]
@@ -17,12 +19,7 @@ mod tests {
         use std::f64::INFINITY;
 
         // Define problem data
-        let a = array![
-            [1.62, -0.61],
-            [-1.07, 0.86],
-            [1.74, -0.76],
-            [-0.24, 1.46],
-        ];
+        let a = array![[1.62, -0.61], [-1.07, 0.86], [1.74, -0.76], [-0.24, 1.46],];
 
         let b = array![[-0.32, -0.38, 1.13, -1.09]];
 
@@ -32,9 +29,7 @@ mod tests {
 
         println!("{:#?}", P);
 
-        let A = &[[0.0, 0.0],
-                  [0.0, 0.0],
-                  [0.0, 0.0]];
+        let A = &[[0.0, 0.0], [0.0, 0.0], [0.0, 0.0]];
         let l = &[-INFINITY, -INFINITY, -INFINITY];
         let u = &[INFINITY, INFINITY, INFINITY];
 
@@ -42,12 +37,18 @@ mod tests {
         let P = CscMatrix::from(P.outer_iter()).into_upper_tri();
 
         // Change the default alpha and disable verbose output
-        let settings = Settings::default()
-            .alpha(1.0)
-            .verbose(false);
+        let settings = Settings::default().alpha(1.0).verbose(false);
 
         // Create an OSQP problem
-        let mut prob = Problem::new(P, &q.iter().map(|x| *x).collect::<Vec<_>>(), A, l, u, &settings).expect("failed to setup problem");
+        let mut prob = Problem::new(
+            P,
+            &q.iter().map(|x| *x).collect::<Vec<_>>(),
+            A,
+            l,
+            u,
+            &settings,
+        )
+        .expect("failed to setup problem");
 
         // Solve problem
         let result = prob.solve();
@@ -55,10 +56,10 @@ mod tests {
         // Print the solution
         println!("{:?}", result.x().expect("failed to solve problem"));
 
-        assert_eq!(1, 2);
+        // assert_eq!(1, 2);
     }
     #[test]
-    fn it_works() {
+    fn defining_an_ast_works() {
         let x = Variable::new(Shape(3, 2), "x".to_owned());
         let a = array![
             [1.62, -0.61, -0.52],
@@ -112,5 +113,27 @@ mod tests {
                 inequalities: Vec::new(),
             }
         );
+    }
+
+    #[test]
+    fn solving_works() {
+        use crate::solvers;
+
+        let x = Variable::new(Shape(3, 2), "x".to_owned());
+        let a = array![[1.62, -0.61], [-1.07, 0.86], [1.74, -0.76], [-0.24, 1.46],];
+        let a = Constant::new(Shape(3, 2), a);
+        let b = array![[-0.32, -0.38, 1.13, -1.09]];
+        let b = Constant::new(Shape(3, 2), b);
+
+        let objective =
+            Sum(Square(Subtract(Multiply(a.into(), x.into()).into(), b.into()).into()).into());
+
+        let problem = Problem {
+            objective: objective.into(),
+            equalities: Vec::new(),
+            inequalities: Vec::new(),
+        };
+
+        assert_eq!(problem.solve(), solvers::Result::Solved(Vec::new()));
     }
 }

@@ -1,4 +1,5 @@
 use crate::functions::{BuiltIn, Dcp};
+use crate::solvers::{self, Solver};
 use ndarray::Array2;
 
 #[derive(Debug, PartialEq)]
@@ -6,6 +7,12 @@ pub struct Problem {
     pub objective: Expression,
     pub equalities: Vec<Relation>,
     pub inequalities: Vec<Relation>,
+}
+
+impl Problem {
+    pub fn solve(self) -> solvers::Result {
+        solvers::Osqp::new(self).solve()
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -16,7 +23,7 @@ pub struct Relation {
 
 #[derive(Debug, PartialEq)]
 pub struct Shape(pub u32, pub u32);
-pub type Scalar = f32;
+pub type Scalar = f64;
 
 #[derive(Debug, PartialEq)]
 pub struct Variable {
