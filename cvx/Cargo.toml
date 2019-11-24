@@ -1,0 +1,10 @@
+[package]
+name = "cvx"
+version = "0.0.1"
+authors = ["Vinícius Dantas <vinicius.gppcom@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+ndarray = "0.13"
+osqp = "0.6.0"
+approx = "0.3.2"

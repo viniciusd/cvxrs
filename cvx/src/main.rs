@@ -1,7 +1,7 @@
 #![feature(box_patterns)]
-use cvxrs::functions::*;
-use cvxrs::variable::*;
-use cvxrs::solvers;
+use cvx::functions::*;
+use cvx::variable::*;
+use cvx::solvers;
 use ndarray::prelude::*;
 
 fn main() {
