@@ -43,10 +43,9 @@ impl Solver for Osqp {
 
                 println!("{:#?}", P);
 
-                // let A =  Array::zeros(P.shape());
-                let A = Array::zeros((3, 2));
-                let l = &[-INFINITY, -INFINITY, -INFINITY];
-                let u = &[INFINITY, INFINITY, INFINITY];
+                let A =  Array::zeros(P.shape());
+                let l = Array::from_elem((1, A.shape()[0]), -INFINITY);
+                let u = Array::from_elem((1, A.shape()[0]), INFINITY);
 
                 // Extract the upper triangular elements of `P`
                 let P = osqp::CscMatrix::from(P.outer_iter()).into_upper_tri();
@@ -59,8 +58,8 @@ impl Solver for Osqp {
                         P,
                         &q.iter().map(|x| *x).collect::<Vec<_>>(),
                         A.outer_iter(),
-                        l,
-                        u,
+                        &l.iter().map(|x| *x).collect::<Vec<_>>(),
+                        &u.iter().map(|x| *x).collect::<Vec<_>>(),
                         &settings,
                     )
                     .expect("failed to setup problem"),
