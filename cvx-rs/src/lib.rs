@@ -1,4 +1,5 @@
 #![feature(box_patterns)]
+#![allow(dead_code, non_snake_case)]
 // Gonna be useful:
 // https://crates.io/crates/ndarray-rand
 // https://github.com/rust-ndarray/ndarray-linalg
@@ -12,6 +13,7 @@ mod tests {
     use crate::functions::*;
     use crate::variable::*;
     use ndarray::prelude::*;
+    use approx::assert_relative_eq;
 
     #[test]
     fn it_may_work() {
@@ -134,6 +136,14 @@ mod tests {
             inequalities: Vec::new(),
         };
 
-        assert_eq!(problem.solve(), solvers::Result::Solved(Vec::new()));
+        match problem.solve() {
+
+        solvers::Result::Solved(result) => {
+            for (expected, given) in [-0.08686015735562105, -0.7571157568954829].iter().zip(result.iter()) {
+                assert_relative_eq!(expected, given);
+            }
+        },
+        _ => panic!("Could not solve problem"),
+        }
     }
 }
