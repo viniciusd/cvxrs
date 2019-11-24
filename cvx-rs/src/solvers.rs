@@ -33,7 +33,7 @@ impl Solver for Osqp {
                         )),
                         2,
                     )))),
-                equalities: _,
+                equalities,
                 inequalities: _,
             } => {
                 let P = a.t().dot(&a);
@@ -42,9 +42,21 @@ impl Solver for Osqp {
 
                 println!("{:#?}", P);
 
-                let A =  Array::zeros(P.shape());
-                let l = Array::from_elem((1, A.shape()[0]), -INFINITY);
-                let u = Array::from_elem((1, A.shape()[0]), INFINITY);
+                let A = if equalities.is_empty() {
+                    Array::zeros(P.shape())
+                } else {
+                    panic!("Equalities aren't supported yet")
+                };
+                let l = if equalities.is_empty() {
+                    Array::from_elem((1, A.shape()[0]), -INFINITY)
+                } else {
+                    panic!("Equalities aren't supported yet")
+                };
+                let u = if equalities.is_empty() {
+                    Array::from_elem((1, A.shape()[0]), INFINITY)
+                } else {
+                    panic!("Equalities aren't supported yet")
+                };
 
                 // Extract the upper triangular elements of `P`
                 let P = osqp::CscMatrix::from(P.outer_iter()).into_upper_tri();
