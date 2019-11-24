@@ -40,8 +40,6 @@ impl Solver for Osqp {
 
                 let q = -b.dot(&a);
 
-                println!("{:#?}", P);
-
                 let A = if equalities.is_empty() {
                     Array::zeros(P.shape())
                 } else {
