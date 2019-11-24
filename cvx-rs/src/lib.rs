@@ -16,51 +16,6 @@ mod tests {
     use approx::assert_relative_eq;
 
     #[test]
-    fn it_may_work() {
-        use osqp::{CscMatrix, Problem, Settings};
-        use std::f64::INFINITY;
-
-        // Define problem data
-        let a = array![[1.62, -0.61], [-1.07, 0.86], [1.74, -0.76], [-0.24, 1.46],];
-
-        let b = array![[-0.32, -0.38, 1.13, -1.09]];
-
-        let P = a.t().dot(&a);
-
-        let q = -b.dot(&a);
-
-        println!("{:#?}", P);
-
-        let A = &[[0.0, 0.0], [0.0, 0.0], [0.0, 0.0]];
-        let l = &[-INFINITY, -INFINITY, -INFINITY];
-        let u = &[INFINITY, INFINITY, INFINITY];
-
-        // Extract the upper triangular elements of `P`
-        let P = CscMatrix::from(P.outer_iter()).into_upper_tri();
-
-        // Change the default alpha and disable verbose output
-        let settings = Settings::default().alpha(1.0).verbose(false);
-
-        // Create an OSQP problem
-        let mut prob = Problem::new(
-            P,
-            &q.iter().map(|x| *x).collect::<Vec<_>>(),
-            A,
-            l,
-            u,
-            &settings,
-        )
-        .expect("failed to setup problem");
-
-        // Solve problem
-        let result = prob.solve();
-
-        // Print the solution
-        println!("{:?}", result.x().expect("failed to solve problem"));
-
-        // assert_eq!(1, 2);
-    }
-    #[test]
     fn defining_an_ast_works() {
         let x = Variable::new(Shape(3, 2), "x".to_owned());
         let a = array![
