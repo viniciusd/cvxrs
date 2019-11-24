@@ -1,4 +1,3 @@
-#![feature(box_patterns)]
 use crate::functions::*;
 use crate::variable::*;
 use ndarray::Array;
